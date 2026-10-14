@@ -4,31 +4,32 @@
   </a>
 </p>
 
-### whoami
+<img src="assets/h-whoami.svg" alt="$ whoami" width="100%">
 
 I find what the internet knows about people and companies, before someone with worse intentions does.
 
 My specialty is **OSINT** (open-source intelligence): rebuilding an organisation's attack surface using nothing but public sources. Leaked credentials, exposed staff, forgotten subdomains, a badge photographed on Instagram. Then I help close the gaps.
 
----
+<img src="assets/h-case.svg" alt="$ cat case-001/briefing.txt" width="100%">
 
-### Open case 001: The raven's nest
+<a href="case-001/evidence.jpg"><img src="assets/case-001.svg" alt="Case 001, The raven's nest. Unsolved. Click to open the evidence." width="100%"></a>
 
-An informant sent me a single photo before going silent. Somewhere in it is the place they were watching, and somewhere else is what they wanted me to know.
-
-**Everything you need is in this repository.** No social engineering, no attacking anything, no outside help required.
-
-<p align="center">
-  <img src="case-001/evidence.jpg" alt="Evidence #001: a dark silhouette of an island at dusk" width="520">
-</p>
+An informant sent me a single photo before going silent. Somewhere in it is the place they were watching, and somewhere else is what they wanted me to know. **Click the card to open the evidence.** Everything you need is in this repository: no social engineering, no attacking anything.
 
 **Submit your flag**
 
 1. Build the string `answer:your-github-username`, all lowercase.
 2. Hash it with SHA-256. Your flag is unique to you, so copying someone else's won't work.
-   - Bash: `echo -n "answer:username" | sha256sum`
-   - PowerShell: `[BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes("answer:username"))).Replace("-","").ToLower()`
-   - Or in your browser with [CyberChef](https://gchq.github.io/CyberChef/#recipe=SHA2('256',64,160))
+   - In your browser: [CyberChef](https://gchq.github.io/CyberChef/#recipe=SHA2('256',64,160))
+   - Bash:
+     ```bash
+     echo -n "answer:username" | sha256sum
+     ```
+   - PowerShell:
+     ```powershell
+     $s = "answer:username"
+     -join ([Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes($s)) | % { $_.ToString("x2") })
+     ```
 3. [Open an issue](https://github.com/Mabimzaa/Mabimzaa/issues/new?title=case-001%3A%20PASTE-YOUR-HASH-HERE&body=Submitting%20my%20flag%20for%20case%20001.) with the title `case-001: <your hash>`.
 
 A bot checks your flag within a minute. Solve it and your name goes up below.
@@ -57,34 +58,32 @@ Some messages are encoded, not encrypted. The trailing characters are a clue to 
 
 </details>
 
-#### Hall of fame
+<img src="assets/h-hof.svg" alt="$ tail hall-of-fame.log" width="100%">
 
 <!-- HOF:START -->
 Nobody has cracked this case yet. Be the first.
 <!-- HOF:END -->
 
----
+<img src="assets/h-services.svg" alt="$ ls ./services" width="100%">
 
-### What I work on
+<a href="https://mabimzaa.github.io"><img src="assets/services.svg" alt="Digital footprint audits (specialty), security testing, awareness training" width="100%"></a>
 
-| | |
-|---|---|
-| **Digital footprint audits** | The investigation an attacker would run before targeting you, delivered as a clear, prioritised report |
-| **Security testing** | Websites, access points and configuration, always within a scope authorised in writing |
-| **Awareness training** | Phishing, passwords and social media hygiene for teams that aren't technical |
-
-### Where I train
+<img src="assets/h-train.svg" alt="$ history | grep training" width="100%">
 
 - **CTFs** with [Corvus Mind](https://shsh-commits.github.io/corvusmind/), an OSINT-focused team
 - **Hack The Box** and **TryHackMe**: recon, web exploitation, privilege escalation
 
-### Rules I work by
+- **Rules I work by**: no engagement without written authorisation, and collected data is deleted at the end
 
-No engagement without written authorisation. Data collected stays confidential and is deleted at the end.
+<img src="assets/h-contact.svg" alt="$ ./contact.sh" width="100%">
 
-### Contact
+<p align="center">
+  <a href="https://mabimzaa.github.io"><img src="assets/btn-site.svg" alt="Website: mabimzaa.github.io" width="31%"></a>
+  <a href="mailto:mabimzaa@proton.me"><img src="assets/btn-mail.svg" alt="Email: mabimzaa@proton.me" width="31%"></a>
+  <a href="https://shsh-commits.github.io/corvusmind/"><img src="assets/btn-team.svg" alt="Corvus Mind, my CTF team" width="31%"></a>
+</p>
 
-[mabimzaa.github.io](https://mabimzaa.github.io) · mabimzaa@proton.me · French / English
+<p align="center"><sub>French / English</sub></p>
 
 <details>
 <summary><b>Version française</b></summary>
