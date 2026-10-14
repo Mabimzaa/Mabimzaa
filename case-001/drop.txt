@@ -1,5 +1,0 @@
-Field notes. Do not commit this.
-
-VGhlIGFiYmV5IG9uIHRoYXQgaXNsYW5kIGlzIGRlZGljYXRlZCB0byBhbiBhcmNo
-YW5nZWwuIFlvdXIgYW5zd2VyIGlzIGhpcyBuYW1lLCBvbmUgd29yZCwgbG93ZXJj
-YXNlLiBTdWJtaXQgc2hhMjU2KGFuc3dlcjp5b3VyLWdpdGh1Yi11c2VybmFtZSku
