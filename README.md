@@ -61,7 +61,11 @@ Some messages are encoded, not encrypted. The trailing characters are a clue to 
 <img src="assets/h-hof.svg" alt="$ tail hall-of-fame.log" width="100%">
 
 <!-- HOF:START -->
-Nobody has cracked this case yet. Be the first.
+**1** investigator has cracked this case.
+
+| # | Investigator | Solved on |
+|---|---|---|
+| 1 | [@X-ynea](https://github.com/X-ynea) | 2026-10-14 |
 <!-- HOF:END -->
 
 <img src="assets/h-services.svg" alt="$ ls ./services" width="100%">
