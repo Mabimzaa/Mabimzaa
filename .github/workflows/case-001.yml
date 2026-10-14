@@ -1,0 +1,133 @@
+name: Case 001
+
+# Checks flags submitted as issues and updates the hall of fame in README.md.
+# The accepted answers live in the CASE001_ANSWERS repository secret
+# (comma-separated, lowercase), never in this file.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: case-001
+  cancel-in-progress: false
+
+jobs:
+  check-flag:
+    if: startsWith(github.event.issue.title, 'case-001')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        env:
+          ANSWERS: ${{ secrets.CASE001_ANSWERS }}
+        with:
+          script: |
+            const crypto = require('crypto');
+            const issue = context.payload.issue;
+            const login = issue.user.login;
+            const { owner, repo } = context.repo;
+            const issue_number = issue.number;
+
+            const reply = (body) =>
+              github.rest.issues.createComment({ owner, repo, issue_number, body });
+            const close = (state_reason) =>
+              github.rest.issues.update({ owner, repo, issue_number, state: 'closed', state_reason });
+
+            const answers = (process.env.ANSWERS || '')
+              .split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+            if (!answers.length) {
+              core.setFailed('The CASE001_ANSWERS secret is missing.');
+              return;
+            }
+
+            const found = issue.title.toLowerCase().match(/\b[a-f0-9]{64}\b/);
+            if (!found) {
+              await reply(
+                `@${login} I couldn't find a flag in the title.\n\n` +
+                'The title must look like `case-001: <64-character sha256 hash>`. ' +
+                'Hash `answer:your-github-username`, all lowercase.'
+              );
+              await close('not_planned');
+              return;
+            }
+
+            const user = login.toLowerCase();
+            const correct = answers.some((a) =>
+              crypto.createHash('sha256').update(`${a}:${user}`).digest('hex') === found[0]
+            );
+
+            if (!correct) {
+              await reply(
+                `@${login} That flag doesn't match. The case is still open.\n\n` +
+                'Check the format: sha256 of `answer:your-github-username`, all lowercase, no spaces. ' +
+                'The hints in the README can help.'
+              );
+              await close('not_planned');
+              return;
+            }
+
+            if (user === owner.toLowerCase()) {
+              await reply('Owner test: the flag is valid. You are not added to the hall of fame.');
+              await close('completed');
+              return;
+            }
+
+            const { data } = await github.rest.repos.getContent({ owner, repo, path: 'README.md' });
+            const readme = Buffer.from(data.content, 'base64').toString('utf8');
+            const START = '<!-- HOF:START -->';
+            const END = '<!-- HOF:END -->';
+            const i = readme.indexOf(START);
+            const j = readme.indexOf(END);
+            if (i < 0 || j < i) {
+              core.setFailed('Hall of fame markers not found in README.md.');
+              return;
+            }
+
+            const block = readme.slice(i + START.length, j);
+            const solvers = [...block.matchAll(
+              /\[@([A-Za-z0-9-]+)\]\(https:\/\/github\.com\/[A-Za-z0-9-]+\) \| (\d{4}-\d{2}-\d{2})/g
+            )].map((m) => ({ login: m[1], date: m[2] }));
+
+            if (solvers.some((s) => s.login.toLowerCase() === user)) {
+              await reply(`@${login} You already cracked this case. Your name is in the hall of fame.`);
+              await close('completed');
+              return;
+            }
+
+            const date = new Date().toISOString().slice(0, 10);
+            solvers.push({ login, date });
+            const rank = solvers.length;
+            const rows = solvers
+              .map((s, k) => `| ${k + 1} | [@${s.login}](https://github.com/${s.login}) | ${s.date} |`)
+              .join('\n');
+            const count = rank === 1 ? '**1** investigator has' : `**${rank}** investigators have`;
+            const newBlock =
+              `\n${count} cracked this case.\n\n` +
+              '| # | Investigator | Solved on |\n|---|---|---|\n' +
+              `${rows}\n`;
+            const updated = readme.slice(0, i + START.length) + newBlock + readme.slice(j);
+
+            const author = {
+              name: 'Mabimzaa',
+              email: '229916391+Mabimzaa@users.noreply.github.com',
+            };
+            await github.rest.repos.createOrUpdateFileContents({
+              owner, repo,
+              path: 'README.md',
+              message: `Case 001 solved by @${login}`,
+              content: Buffer.from(updated, 'utf8').toString('base64'),
+              sha: data.sha,
+              author,
+              committer: author,
+            });
+
+            await reply(
+              `@${login} Case closed. Well done, investigator.\n\n` +
+              `You are solver #${rank}. Your name is now in the hall of fame on ` +
+              `[the profile](https://github.com/${owner}).`
+            );
+            await close('completed');
